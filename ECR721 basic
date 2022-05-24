@@ -1,0 +1,22 @@
+// contracts/GameItem.sol
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+
+contract MyNFT is ERC721 {
+    constructor() ERC721("WeiCoin2", "WC2") {}
+
+    function mint(uint256 tokenId) public {
+        _mint(msg.sender, tokenId);
+    }
+
+    function transferMultiple(uint[] memory ids, address to) public {
+        require(ids.length > 0, "Must fill in nft id");
+        require(balanceOf(msg.sender) >= ids.length, "No enough nft");
+        for(uint i = 0; i < ids.length; i++) {
+            safeTransferFrom(msg.sender, to, ids[i]);
+        }
+    }
+} 
