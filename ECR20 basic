@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+contract WeiCoin is ERC20 {
+    uint public initialSupply = 10000000;
+//定義 name 和 symbol 名稱
+    constructor() ERC20("WeiCoin", "WC") {
+        _mint(msg.sender, initialSupply);
+    }
+//msg 可以拿到建立合約的地址 給自己
+    function mint(uint _amount, address _to) public payable {
+        _mint(_to, _amount);
+    }
+}
