@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+// 1 wei = 10^(-18) Ether
+contract WeiCoinICO is ERC20 {
+    uint public initialTokes = 20000 * 10**18;
+    uint256 public RATE = 300; // Number of tokens per Ether
+    uint256 public CAP = 3 ; // Cap in Ether
+    uint256 public raisedAmount;
+    address payable public owner;
+    
+
+    constructor() ERC20("WeiCoin3", "WC3") payable {
+        _mint(msg.sender, initialTokes);
+        owner = payable(msg.sender);
+    }
+
+    modifier goalReached() {
+        require(msg.value + raisedAmount <= CAP * 1 ether, "Exceed goal");
+        _;
+    }
+    
+    function buyTokens() public payable goalReached {
+        require(msg.value > 0, "You should pay for this.");
+        uint256 weiAmount = msg.value; // Calculate tokens to sell
+        uint256 tokens = weiAmount * RATE;
+        
+        raisedAmount += msg.value; // Increment raised amount
+        _transfer(owner, msg.sender, tokens); // Send tokens to buyer
+        
+        owner.transfer(msg.value);// Send money to owner
+    }
+
+    function burn(uint amount) public {
+        _burn(msg.sender, amount);
+    }
+}
